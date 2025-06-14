@@ -1,0 +1,33 @@
+@startuml
+
+class Player
+class BaseObject
+class Playback
+class UIObject
+class Container
+class Plugin
+class CorePlugin
+class ContainerPlugin
+class UIContainerPlugin
+class UIPlugin
+class UICorePlugin
+class Core
+
+Player -|> BaseObject
+BaseObject -|> Container
+Playback -|> UIObject
+UIObject -|> Container
+
+Container "0..n" <-down- "1" ContainerPlugin : container
+Container "0..n" <-down- "1" UIContainerPlugin : container
+
+ContainerPlugin -|> Plugin
+UIContainerPlugin -|> UIPlugin
+Plugin -|> CorePlugin
+UIPlugin -|> UICorePlugin
+
+CorePlugin --> Core : core
+UICorePlugin "1" --> Core : core
+Core "0..n" --> Core : core
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+
+class BaseObject {
+    + id: String
+
+    + on(event, callback): EventId
+    + once(event, callback): EventId
+    + off(EventId)
+
+    + trigger(event)
+    + trigger(event, info)
+
+    + listenTo(object, event, callback): EventId
+    + stopListening(EventId)
+    + stopListening()
+}
+
+class UIObject {
+    + render()
+}
+
+class Playback {
+    + initialize()
+    + bindEvents()
+    + onPlay()
+    + onPause()
+    + onStop()
+}
+
+UIObject --|> BaseObject : Extends
+Playback --|> BaseObject : Extends
+
+@enduml

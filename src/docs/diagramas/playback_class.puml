@@ -1,0 +1,65 @@
+@startuml PlaybackClassDiagram
+' === 5. Diagrama da Classe Playback ===
+' Mostra os atributos e métodos principais da classe Playback,
+' além de suas associações com enums e objetos auxiliares.
+interface NamedType
+class UIObject
+
+class Playback {
+    - source: String
+    - mimeType: String?
+    - duration: Double
+    - position: Double
+    - isDvrAvailable: Boolean
+    - isDvrInUse: Boolean
+    - volume: Float?
+    - selectedAudio: String?
+    - selectedSubtitle: String?
+    - availableAudios: List<String>
+    - availableSubtitles: List<String>
+    - selectedQualityLevel: Quality?
+    - availableQualityLevels: List<Quality>
+    - currentDate: Long?
+    - currentTime: Long?
+
+    + supportsSource(source: String, mimeType: String?): Boolean
+    + play()
+    + pause()
+    + stop()
+    + seek(seconds: Int)
+    + seekToLivePosition()
+    + canPlay(): Boolean
+    + canPause(): Boolean
+    + canSeek(): Boolean
+    + load(source: String, mimeType: String?)
+    + startAt(seconds: Int)
+}
+
+enum MediaType {
+    UNKNOWN
+    VOD
+    LIVE
+    ADVERTISEMENT
+    AUDIO
+}
+
+enum State {
+    NONE
+    IDLE
+    PLAYING
+    PAUSED
+    STALLING
+    ERROR
+}
+
+class Options
+class Quality
+
+NamedType <|.. Playback
+UIObject <|-- Playback
+
+Playback --> MediaType : mediaType
+Playback --> State : state
+Playback --> Options : options
+Playback --> Quality : selectedQualityLevel
+@enduml

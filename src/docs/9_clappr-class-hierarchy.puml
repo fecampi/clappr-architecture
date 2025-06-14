@@ -1,0 +1,33 @@
+@startuml
+left to right direction
+
+package "Base Hierarchy" {
+    class "Base Obj"
+    class "Plugin"
+    class "Player"
+    class "UI Obj"
+    class "UI Plugin"
+
+    "Plugin" --> "Base Obj" : extends
+    "UI Obj" --> "Base Obj" : extends
+    "UI Plugin" --> "Plugin" : extends
+    "UI Plugin" --> "UI Obj" : extends
+    "Player" --> "Base Obj" : extends
+}
+
+package "Plugins" {
+    class "Core Plugin"
+    class "Container Plugin"
+    class "UI CorePlugin"
+    class "UI ContainerPlugin"
+
+    "UI CorePlugin" --> "UI Plugin" : extends
+    "UI ContainerPlugin" --> "UI Plugin" : extends
+}
+
+package "Player Components" {
+    class "Core"
+    class "Container"
+    class "Playback"
+}
+@enduml

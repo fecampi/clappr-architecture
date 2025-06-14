@@ -1,0 +1,20 @@
+@startuml
+
+class Player {
+}
+
+class Core {
+}
+
+class Container {
+}
+
+class Playback {
+}
+
+Player "1" *-- "1" Core
+Core "0..n" *-- "0..1" Container
+Container "0..1" *-- Playback
+Core "0..1" -> Container : active
+
+@enduml

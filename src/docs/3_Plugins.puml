@@ -1,0 +1,22 @@
+@startuml
+
+class BaseObject {
+}
+
+class UIBaseObject {
+}
+
+class Plugin {
+    + name: string
+    + state: [enabled, disabled]
+}
+
+class UIPlugin {
+    + visibility: [visible, hidden]
+}
+UIBaseObject --|> BaseObject : Extends
+Plugin --|> BaseObject : Extends
+UIPlugin --|> UIBaseObject : Extends
+UIPlugin --|> Plugin : Extends
+
+@enduml

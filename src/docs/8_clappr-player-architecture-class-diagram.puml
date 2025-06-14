@@ -1,0 +1,42 @@
+@startuml
+skinparam backgroundColor #1e1e1e
+skinparam classBackgroundColor #1e1e1e
+skinparam classBorderColor white
+skinparam classArrowColor #ff7f7f
+skinparam classFontColor white
+skinparam noteBackgroundColor #1e1e1e
+skinparam noteBorderColor white
+
+package "Core" {
+    class Core
+    class "UI CorePlugin"
+    class "Core Plugin"
+    class "media control"
+
+    Core --> "UI CorePlugin" : 0..n
+    Core --> "Core Plugin" : 0..n
+    "Core Plugin" --> "media control" : 0..1
+}
+
+package "Container" {
+    class Container
+    class "UI ContainerPlugin"
+    class "Container Plugin"
+    class Playback
+
+    Core --> Container : 0..n (0..1 ativo)
+    Container --> "UI ContainerPlugin" : 0..n
+    Container --> "Container Plugin" : 0..n
+    Container --> Playback : 0..1
+}
+
+package "Playback Types" {
+    class hls
+    class dash
+    class mp4
+
+    Playback --> hls : 0..1
+    Playback --> dash : 0..1
+    Playback --> mp4 : 0..1
+}
+@enduml

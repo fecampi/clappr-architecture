@@ -1,0 +1,15 @@
+@startuml
+' === 3. Diagrama de Plugins e suas Extensões ===
+' Mostra a hierarquia de extensão dos plugins Core, Container e UI.
+class Plugin
+class UIPlugin
+class CorePlugin
+class ContainerPlugin
+class UICorePlugin
+class UIContainerPlugin
+
+CorePlugin --|> Plugin
+ContainerPlugin --|> Plugin
+UICorePlugin --|> UIPlugin
+UIContainerPlugin --|> UIPlugin
+@enduml

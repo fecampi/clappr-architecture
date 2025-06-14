@@ -1,0 +1,14 @@
+@startuml
+' === 1. Diagrama de Composição do Player ===
+' Este diagrama mostra a composição do Clappr Player,
+' conectando Player → Core → Container → Playback com cardinalidades.
+class Player {}
+class Core {}
+class Container {}
+class Playback {}
+
+Player "1" *-- "1" Core
+Core "0..n" *-- "0..1" Container
+Container "0..1" *-- Playback
+Core "0..1" -> Container : active
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+' === 6. Diagrama de API de Eventos ===
+' Mostra a interface de eventos presente no BaseObject,
+' com métodos de escuta, disparo e controle de eventos.
+class BaseObject {
+    + on(event, callback): EventId
+    + once(event, callback): EventId
+    + off(EventId)
+    + trigger(event)
+    + trigger(event, info)
+    + listenTo(object, event, callback): EventId
+    + stopListening(EventId)
+    + stopListening()
+}
+@enduml

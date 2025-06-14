@@ -1,0 +1,18 @@
+@startuml
+' === 7. Diagrama de Comportamento UIObject e Playback ===
+' Métodos de comportamento das classes visuais UIObject e Playback.
+class UIObject {
+    + render()
+}
+
+class Playback {
+    + initialize()
+    + bindEvents()
+    + onPlay()
+    + onPause()
+    + onStop()
+}
+
+UIObject --|> BaseObject : Extends
+Playback --|> BaseObject : Extends
+@enduml
