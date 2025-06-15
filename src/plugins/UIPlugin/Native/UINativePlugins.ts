@@ -1,42 +1,47 @@
-import Plugin from "../Plugin";
-import { CoreInterface } from "../../core/Interfaces";
-import { UIButton, UIButtonOptions } from "./components/UIButton";
-import { UIText, UITextOptions } from "./components/UIText";
-import { UIContainer } from "./components/UIContainer";
+import Plugin from "../../Plugin";
+import { CoreInterface } from "../../../core/Interfaces";
 
 interface FocusableComponent {
-  element: HTMLElement;
+  element: any; 
   focus?: () => void;
   destroy?: () => void;
 }
 
-class UIPlugin extends Plugin {
+class UINativePlugin extends Plugin {
   protected core: CoreInterface;
   protected components: FocusableComponent[] = [];
-  protected container: HTMLElement;
-
+  protected container: any; 
   public add = {
-    button: (props: UIButtonOptions): HTMLElement => {
-      const playPauseButton = new UIButton(props);
+    button: (props: any): any => {
+      const playPauseButton = {
+        element: { type: "UIButton", props },
+        destroy: () => {},
+      };
       this.components.push(playPauseButton);
       return playPauseButton.element;
     },
-    component: (component: FocusableComponent): HTMLElement => {
+    component: (component: FocusableComponent): any => {
       return this.addComponent(component);
     },
-    text: (props: UITextOptions): HTMLElement => {
-      const textComponent = new UIText(props);
+    text: (props: any): any => {
+      const textComponent = {
+        element: { type: "UIText", props },
+        destroy: () => {},
+      };
       this.components.push(textComponent);
       return textComponent.element;
     },
     container: (props?: {
       className?: string;
-      styles?: Partial<CSSStyleDeclaration>;
-    }): UIContainer => {
-      const container = new UIContainer(props);
+      styles?: Partial<Record<string, any>>;
+    }): any => {
+      const container = {
+        domElement: { type: "UIContainer", props },
+        destroy: () => {},
+      };
       this.components.push({
         element: container.domElement,
-        destroy: () => container.destroy(),
+        destroy: container.destroy,
       });
       return container;
     },
@@ -46,12 +51,19 @@ class UIPlugin extends Plugin {
     super(core);
     this.core = core;
 
-    this.container = document.createElement("div");
-    this.container.className = "ui-container";
-    document.body.appendChild(this.container);
+    this.container = {
+      className: "ui-container-mock",
+      children: [] as any[],
+      appendChild: (child: any) => {
+        this.container.children.push(child);
+      },
+      remove: () => {
+        this.container.children = [];
+      },
+    };
   }
 
-  private addComponent(component: FocusableComponent): HTMLElement {
+  private addComponent(component: FocusableComponent): any {
     this.components.push(component);
     return component.element;
   }
@@ -62,7 +74,7 @@ class UIPlugin extends Plugin {
     if (typeof this.create === "function") {
       (this as any).create();
     }
-    this.container.innerHTML = "";
+    this.container.children = [];
     this.components.forEach((component) => {
       this.container.appendChild(component.element);
     });
@@ -80,4 +92,4 @@ class UIPlugin extends Plugin {
   }
 }
 
-export default UIPlugin;
+export default UINativePlugin;

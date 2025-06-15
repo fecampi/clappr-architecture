@@ -7,7 +7,7 @@
     "build:web": "node build-scripts/build-web.cjs",
     "build:native": "node build-scripts/build-native.cjs",
     "start:web": "npm run build:web && npx serve dist/web",
-    "start:node": "npm run build:native && node dist/native/index.js"
+    "start:native": "npm run build:native && node dist/native/index.js"
   },
   "devDependencies": {
     "esbuild": "^0.25.5",

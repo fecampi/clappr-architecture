@@ -1,4 +1,4 @@
-import UIPlugin from "../plugins/UIPlugin";
+import UIPlugin from "../plugins/UIPlugin/HTML/UIPlugin";
 
 class Container {
   element: HTMLElement;

@@ -1,4 +1,4 @@
-import UIPlugin from "../UIPlugin/UIPlugin";
+import UIPlugin from "../UIPlugin/HTML/UIPlugin";
 import { CoreInterface } from "../../core/Interfaces";
 
 class MediaControl extends UIPlugin {
@@ -59,6 +59,20 @@ class MediaControl extends UIPlugin {
       },
     });
 
+    row.add.button({
+      text: " ",
+      onClick: () => {
+        this.updateStatus("Mosaic");
+      },
+      styles: {
+        margin: "10px",
+        padding: "8px 16px",
+        fontSize: "14px",
+        backgroundColor: "transparent", 
+        border: "2px solid #007BFF",
+        borderRadius: "4px", 
+      },
+    });
 
     this.statusTextElement = this.add.text({
       text: "Status: pronto para tocar",

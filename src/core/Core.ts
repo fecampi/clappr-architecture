@@ -1,5 +1,5 @@
 import Container from "./Container.ts";
-import UIPlugin from "../plugins/UIPlugin/UIPlugin.ts";
+import UIPlugin from "../plugins/UIPlugin/HTML/UIPlugin.ts";
 import BaseObject from "../base/BaseObject.ts";
 
 interface PlaybackConstructor {
