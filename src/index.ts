@@ -7,26 +7,45 @@ if (Playbacks && Plugins) {
   player.registerPlayback(Playbacks.HLSPlayback);
   player.registerPlugin(Plugins.MediaControl);
 
-  // Criar input de texto
-  const urlInput = document.createElement("input");
-  urlInput.type = "text";
-  urlInput.id = "video-url";
-  urlInput.placeholder = "URL do vídeo";
+  // Criar select com opções de vídeos
+  const videoSelect = document.createElement("select");
+  videoSelect.id = "video-select";
 
-  // Criar botão
+  // Opções de vídeos demo
+  const videos = [
+    { label: "Selecione um vídeo...", url: "" },
+    { label: "Big Buck Bunny (MP4)", url: "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4" },
+    { label: "Sintel Trailer (MP4)", url: "https://media.w3.org/2010/05/sintel/trailer.mp4" },
+    { label: "HLS Test Stream (m3u8)", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
+    { label: "Apple Sample Stream (m3u8)", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" }
+  ];
+
+  videos.forEach(({ label, url }) => {
+    const option = document.createElement("option");
+    option.value = url;
+    option.textContent = label;
+    videoSelect.appendChild(option);
+  });
+
+  // Criar botão para carregar o vídeo selecionado
   const loadVideoButton = document.createElement("button");
   loadVideoButton.id = "load-video";
-  loadVideoButton.textContent = "OK";
+  loadVideoButton.textContent = "Carregar vídeo";
 
-  // Adicionar ao body ou a uma div/container específico
-  document.body.appendChild(urlInput);
+  // Adicionar select e botão ao body ou container
+  document.body.appendChild(videoSelect);
   document.body.appendChild(loadVideoButton);
 
-  // Adicionar evento de click no botão
+  // Evento do botão
   loadVideoButton.addEventListener("click", () => {
-    const url = urlInput.value || "";
+    const url = videoSelect.value;
+    if (!url) {
+      alert("Por favor, selecione um vídeo válido.");
+      return;
+    }
     player.load(url);
   });
+
 } else {
   console.error("Playbacks ou Plugins não estão definidos");
 }

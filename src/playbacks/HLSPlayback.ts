@@ -1,8 +1,8 @@
 import Playback from './Playback';
-import {PlaybackOptions} from "./Interfaces"
+import { IPlayback, PlaybackOptions } from "./Interfaces"
 
 
-class HLSPlayback extends Playback {
+class HLSPlayback extends Playback implements IPlayback {
   private options: PlaybackOptions;
 
   constructor(core: any, options: PlaybackOptions) {

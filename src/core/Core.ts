@@ -1,6 +1,6 @@
-import Container from "./Container.js";
-import UIPlugin from "../plugins/UIPlugin.js";
-import BaseObject from "../base/BaseObject.js";
+import Container from "./Container.ts";
+import UIPlugin from "../plugins/UIPlugin/UIPlugin.ts";
+import BaseObject from "../base/BaseObject.ts";
 
 interface PlaybackConstructor {
   new (core: Core, options: any): PlaybackInstance;

@@ -1,7 +1,8 @@
 import BaseObject from "../base/BaseObject";
+import { IPlayback } from "./Interfaces";
 import { CoreInterface } from "../core/Interfaces";
 
-class Playback extends BaseObject {
+class Playback extends BaseObject implements IPlayback {
   protected core: BaseObject & CoreInterface;
 
   constructor(core: BaseObject & CoreInterface) {
@@ -42,16 +43,19 @@ class Playback extends BaseObject {
 
   protected onPlay(): void {
     console.log("Evento de play recebido no Playback");
+    this.play();
     this.trigger("playback:play");
   }
 
   protected onPause(): void {
     console.log("Evento de pause recebido no Playback");
+    this.pause();
     this.trigger("playback:pause");
   }
 
   protected onStop(): void {
     console.log("Evento de stop recebido no Playback");
+    this.stop();
     this.trigger("playback:stop");
   }
 }
