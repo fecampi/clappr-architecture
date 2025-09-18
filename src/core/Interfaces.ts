@@ -4,20 +4,8 @@ export interface CoreInterface {
   isPlaying(): boolean;
   play(): void;
   pause(): void;
-  seek(time: number): void;
-  stop(): void;
-  getCurrentTime(): number;
-  getDuration(): number;
-  setVolume(volume: number): void;
-  getVolume(): number;
-  mute(): void;
-  unmute(): void;
-  isMuted(): boolean;
-  enterFullscreen(): void;
-  exitFullscreen(): void;
-  isFullscreen(): boolean;
-  isPaused(): boolean;
-  resize(width: number, height: number): void;
+  load(src: string): void;
+  getActivePlayback(): any; // Método para acessar playback ativo
   destroy(): void;
 }
 

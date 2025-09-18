@@ -1,4 +1,5 @@
 import Core from "./core/Core.js";
+import BaseObject from "./base/BaseObject.js";
 import { PlaybackConstructor } from "./playbacks/Interfaces.js";
 import { PluginConstructor } from "./plugins/Interfaces.js";
 
@@ -16,17 +17,19 @@ interface PlayerOptions {
   [key: string]: any;
 }
 
-class Player {
+class Player extends BaseObject {
   private core: Core;
   private options: PlayerOptions;
 
   constructor(options: PlayerOptions = {}) {
+    super();
     this.options = { ...options };
     this.core = new Core(this.options);
   }
 
   load(src: string): void {
     this.core.load(src);
+    this.trigger('player:load', src);
   }
 
   registerPlugin(plugin: PluginConstructor): void {
@@ -39,62 +42,100 @@ class Player {
 
   // Métodos de controle de reprodução
   play(): void {
-    this.core.play();
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.play === 'function') {
+      playback.play();
+      this.trigger('player:play');
+    }
   }
 
   pause(): void {
-    this.core.pause();
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.pause === 'function') {
+      playback.pause();
+      this.trigger('player:pause');
+    }
   }
 
   seek(time: number): void {
-    this.core.seek(time);
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.seek === 'function') {
+      playback.seek(time);
+      this.trigger('player:seek', time);
+    }
   }
 
   stop(): void {
-    this.core.stop();
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.stop === 'function') {
+      playback.stop();
+      this.trigger('player:stop');
+    }
   }
 
   // Métodos de informação
   getCurrentTime(): number {
-    return this.core.getCurrentTime();
+    const playback = this.core.getActivePlayback();
+    return playback?.currentTime || 0;
   }
 
   getDuration(): number {
-    return this.core.getDuration();
+    const playback = this.core.getActivePlayback();
+    return playback?.duration || 0;
   }
 
   // Métodos de volume
   setVolume(volume: number): void {
-    this.core.setVolume(volume);
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.setVolume === 'function') {
+      playback.setVolume(volume);
+      this.trigger('player:volume', volume);
+    }
   }
 
   getVolume(): number {
-    return this.core.getVolume();
+    const playback = this.core.getActivePlayback();
+    return playback?.volume || 1;
   }
 
   mute(): void {
-    this.core.mute();
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.mute === 'function') {
+      playback.mute();
+      this.trigger('player:mute');
+    }
   }
 
   unmute(): void {
-    this.core.unmute();
+    const playback = this.core.getActivePlayback();
+    if (playback && typeof playback.unmute === 'function') {
+      playback.unmute();
+      this.trigger('player:unmute');
+    }
   }
 
   isMuted(): boolean {
-    return this.core.isMuted();
+    const playback = this.core.getActivePlayback();
+    return playback?.muted || false;
   }
 
   // Métodos de tela cheia
   enterFullscreen(): void {
-    this.core.enterFullscreen();
+    if (this.core.activeContainer?.element?.requestFullscreen) {
+      this.core.activeContainer.element.requestFullscreen();
+      this.trigger('player:fullscreen', true);
+    }
   }
 
   exitFullscreen(): void {
-    this.core.exitFullscreen();
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+      this.trigger('player:fullscreen', false);
+    }
   }
 
   isFullscreen(): boolean {
-    return this.core.isFullscreen();
+    return !!(document.fullscreenElement);
   }
 
   // Métodos de estado
@@ -103,16 +144,22 @@ class Player {
   }
 
   isPaused(): boolean {
-    return this.core.isPaused();
+    const playback = this.core.getActivePlayback();
+    return playback?.paused || true;
   }
 
   // Métodos de configuração
   resize(width: number, height: number): void {
-    this.core.resize(width, height);
+    if (this.core.activeContainer?.element) {
+      this.core.activeContainer.element.style.width = `${width}px`;
+      this.core.activeContainer.element.style.height = `${height}px`;
+      this.trigger('player:resize', { width, height });
+    }
   }
 
   destroy(): void {
     this.core.destroy();
+    this.trigger('player:destroy');
   }
 
 }

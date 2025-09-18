@@ -77,31 +77,7 @@ class Core extends BaseObject {
     return false;
   }
 
-  play(): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback) {
-      console.log(
-        "Reproduzindo mídia com playback:",
-        activePlayback.constructor.name
-      );
-      activePlayback.play();
-    } else {
-      console.log("Nenhum playback disponível para reproduzir a mídia.");
-    }
-  }
-
-  pause(): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback) {
-      console.log(
-        "Pausando mídia com playback:",
-        activePlayback.constructor.name
-      );
-      activePlayback.pause();
-    } else {
-      console.log("Nenhum playback disponível para pausar a mídia.");
-    }
-  }
+  // Removidos: play() e pause() - lógica movida para Player
 
   unregisterPlugin(plugin: PluginConstructor): void {
     const pluginIndex = this.plugins.findIndex((p) => p.constructor === plugin);
@@ -126,88 +102,9 @@ class Core extends BaseObject {
     }
   }
 
-  // Novos métodos para expandir a API
-  seek(time: number): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback && typeof activePlayback.seek === 'function') {
-      activePlayback.seek(time);
-    }
-  }
-
-  stop(): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback && typeof activePlayback.stop === 'function') {
-      activePlayback.stop();
-    }
-  }
-
-  getCurrentTime(): number {
-    const activePlayback = this.activeContainer?.getPlayback();
-    return activePlayback?.currentTime || 0;
-  }
-
-  getDuration(): number {
-    const activePlayback = this.activeContainer?.getPlayback();
-    return activePlayback?.duration || 0;
-  }
-
-  setVolume(volume: number): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback && typeof activePlayback.setVolume === 'function') {
-      activePlayback.setVolume(volume);
-    }
-  }
-
-  getVolume(): number {
-    const activePlayback = this.activeContainer?.getPlayback();
-    return activePlayback?.volume || 1;
-  }
-
-  mute(): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback && typeof activePlayback.mute === 'function') {
-      activePlayback.mute();
-    }
-  }
-
-  unmute(): void {
-    const activePlayback = this.activeContainer?.getPlayback();
-    if (activePlayback && typeof activePlayback.unmute === 'function') {
-      activePlayback.unmute();
-    }
-  }
-
-  isMuted(): boolean {
-    const activePlayback = this.activeContainer?.getPlayback();
-    return activePlayback?.muted || false;
-  }
-
-  enterFullscreen(): void {
-    if (this.activeContainer?.element?.requestFullscreen) {
-      this.activeContainer.element.requestFullscreen();
-    }
-  }
-
-  exitFullscreen(): void {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  }
-
-  isFullscreen(): boolean {
-    return !!(document.fullscreenElement);
-  }
-
-  isPaused(): boolean {
-    const activePlayback = this.activeContainer?.getPlayback();
-    return activePlayback?.paused || true;
-  }
-
-  resize(width: number, height: number): void {
-    if (this.activeContainer?.element) {
-      this.activeContainer.element.style.width = `${width}px`;
-      this.activeContainer.element.style.height = `${height}px`;
-    }
+  // Método para obter o playback ativo (para delegação)
+  getActivePlayback(): PlaybackInstance | null {
+    return this.activeContainer?.getPlayback() || null;
   }
 
   destroy(): void {
