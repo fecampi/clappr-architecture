@@ -11,28 +11,44 @@ class MediaControl extends UIPlugin {
   }
 
   bindEvents(): void {
-    this.core.on("player:play", this.onPlay.bind(this));
-    this.core.on("player:pause", this.onPause.bind(this));
+    this.core.on("playback:play", this.onPlay.bind(this));
+    this.core.on("playback:pause", this.onPause.bind(this));
   }
 
-  render(): void {
+  render(): HTMLElement {
     console.log("Renderizando controles de mídia");
 
     const playPauseButton = document.createElement("button");
     playPauseButton.innerText = "Play/Pause";
     playPauseButton.addEventListener("click", this.togglePlayPause.bind(this));
 
-    document.body.appendChild(playPauseButton);
+    // Armazenar referência ao elemento
+    this.element = playPauseButton;
+
+    return playPauseButton;
+  }
+
+  protected onEnable(): void {
+    super.onEnable();
+    console.log("MediaControl habilitado");
+  }
+
+  protected onDisable(): void {
+    super.onDisable();
+    console.log("MediaControl desabilitado");
+  }
+
+  protected onDestroy(): void {
+    super.onDestroy();
+    console.log("MediaControl destruído");
   }
 
   togglePlayPause(): void {
     console.log("Play/Pause button clicked");
     if (this.core.isPlaying()) {
       this.core.pause();
-      this.core.trigger("player:pause");
     } else {
       this.core.play();
-      this.core.trigger("player:play");
     }
   }
 

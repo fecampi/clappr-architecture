@@ -1,10 +1,23 @@
 import BaseObject from "../base/BaseObject";
-import { CoreInterface } from "../core/Interfaces";
+import { PlaybackOptions, PlaybackInstance, PlaybackState, ReadyState, NetworkState } from "./Interfaces";
+import { MediaType } from "../enums/MediaType";
 
-class Playback extends BaseObject {
-  protected core: BaseObject & CoreInterface;
+class Playback extends BaseObject implements PlaybackInstance {
+  protected core: any;
+  public duration: number = 0;
+  public currentTime: number = 0;
+  public volume: number = 1;
+  public muted: boolean = false;
+  public paused: boolean = true;
+  public buffered: TimeRanges | null = null;
+  public played: TimeRanges | null = null;
+  public seekable: TimeRanges | null = null;
+  public readyState: ReadyState = ReadyState.HAVE_NOTHING;
+  public networkState: NetworkState = NetworkState.NETWORK_EMPTY;
+  public state: PlaybackState = PlaybackState.IDLE;
+  public mediaType: MediaType = MediaType.UNKNOWN;
 
-  constructor(core: BaseObject & CoreInterface) {
+  constructor(core: any) {
     super();
     this.core = core;
     this.initialize();
@@ -40,13 +53,41 @@ class Playback extends BaseObject {
     this.trigger("playback:stop");
   }
 
+  seek(time: number): void {
+    console.log("Buscando para tempo:", time);
+    this.currentTime = time;
+    this.trigger("playback:seek", time);
+  }
+
+  setVolume(volume: number): void {
+    console.log("Definindo volume para:", volume);
+    this.volume = Math.max(0, Math.min(1, volume));
+    this.trigger("playback:volumechange", this.volume);
+  }
+
+  mute(): void {
+    console.log("Mutando playback");
+    this.muted = true;
+    this.trigger("playback:volumechange", this.volume);
+  }
+
+  unmute(): void {
+    console.log("Desmutando playback");
+    this.muted = false;
+    this.trigger("playback:volumechange", this.volume);
+  }
+
   protected onPlay(): void {
     console.log("Evento de play recebido no Playback");
+    this.paused = false;
+    this.state = PlaybackState.PLAYING;
     this.trigger("playback:play");
   }
 
   protected onPause(): void {
     console.log("Evento de pause recebido no Playback");
+    this.paused = true;
+    this.state = PlaybackState.PAUSED;
     this.trigger("playback:pause");
   }
 

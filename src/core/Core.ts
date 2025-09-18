@@ -1,51 +1,40 @@
 import Container from "./Container.js";
 import UIPlugin from "../plugins/UIPlugin.js";
 import BaseObject from "../base/BaseObject.js";
-
-interface PlaybackConstructor {
-  new (core: Core, options: any): PlaybackInstance;
-  canPlay?(src: string): boolean;
-  name: string;
-}
-
-interface PlaybackInstance {
-  load?(src: string): void;
-  play(): void;
-  pause(): void;
-  constructor: { name: string };
-}
-
-type PluginConstructor = new (core: Core) => PluginInstance;
-
-interface PluginInstance {
-  destroy(): void;
-}
+import { PlaybackConstructor, PlaybackInstance, PlaybackOptions } from "../playbacks/Interfaces.js";
+import { PluginConstructor, PluginInstance } from "../plugins/Interfaces.js";
 
 class Core extends BaseObject {
-  container: Container;
+  containers: Container[];
   plugins: PluginInstance[];
   playbacks: PlaybackConstructor[];
-  playback: PlaybackInstance | null;
+  activeContainer: Container | null;
 
   constructor(options?: any) {
     super();
-    this.container = new Container(); // instanciar Container sem argumentos
+    this.containers = [new Container()]; // Novo: inicia com um container padrão
+    this.activeContainer = this.containers[0]; // Define o primeiro container como ativo
     this.plugins = [];
     this.playbacks = [];
-    this.playback = null;
   }
 
-  createPlayback(options: { src: string }): void {
+  createPlayback(options: PlaybackOptions): void {
     console.log("Tentando criar playback para:", options);
     console.log(
       "Playbacks registrados:",
       this.playbacks.map((p) => p.name)
     );
 
+    if (!this.activeContainer) {
+      console.log("Nenhum container ativo disponível");
+      return;
+    }
+
     for (const PlaybackClass of this.playbacks) {
-      if (PlaybackClass?.canPlay?.(options.src)) {
+      if (PlaybackClass?.canPlay?.(options.src || '')) {
         console.log("Playback encontrado:", PlaybackClass.name);
-        this.playback = new PlaybackClass(this, options);
+        const playbackInstance = new PlaybackClass(this, options);
+        this.activeContainer.setPlayback(playbackInstance);
         return;
       }
     }
@@ -57,12 +46,13 @@ class Core extends BaseObject {
 
   load(src: string): void {
     this.createPlayback({ src });
-    if (this.playback?.load instanceof Function) {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback?.load instanceof Function) {
       console.log(
         "Carregando mídia com playback:",
-        this.playback.constructor.name
+        activePlayback.constructor.name
       );
-      this.playback.load(src);
+      activePlayback.load(src);
     } else {
       console.log("Nenhum playback disponível para carregar a mídia.");
     }
@@ -73,8 +63,8 @@ class Core extends BaseObject {
     const pluginInstance = new plugin(this);
     this.plugins.push(pluginInstance);
     if (pluginInstance instanceof UIPlugin) {
-      console.log("[Core] Plugin UI detectado, adicionando ao container");
-      this.container.addUIPlugin(pluginInstance);
+      console.log("[Core] Plugin UI detectado, adicionando aos containers");
+      this.containers.forEach(container => container.addUIPlugin(pluginInstance));
     }
   }
 
@@ -88,24 +78,26 @@ class Core extends BaseObject {
   }
 
   play(): void {
-    if (this.playback) {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback) {
       console.log(
         "Reproduzindo mídia com playback:",
-        this.playback.constructor.name
+        activePlayback.constructor.name
       );
-      this.playback.play();
+      activePlayback.play();
     } else {
       console.log("Nenhum playback disponível para reproduzir a mídia.");
     }
   }
 
   pause(): void {
-    if (this.playback) {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback) {
       console.log(
         "Pausando mídia com playback:",
-        this.playback.constructor.name
+        activePlayback.constructor.name
       );
-      this.playback.pause();
+      activePlayback.pause();
     } else {
       console.log("Nenhum playback disponível para pausar a mídia.");
     }
@@ -116,10 +108,126 @@ class Core extends BaseObject {
     if (pluginIndex !== -1) {
       const [pluginInstance] = this.plugins.splice(pluginIndex, 1);
       if (pluginInstance instanceof UIPlugin) {
-        this.container.removeUIPlugin(pluginInstance);
+        this.containers.forEach(container => container.removeUIPlugin(pluginInstance));
       }
       pluginInstance.destroy();
     }
+  }
+
+  // Novos métodos para gerenciar múltiplos containers
+  addContainer(container: Container): void {
+    this.containers.push(container);
+  }
+
+  removeContainer(container: Container): void {
+    const index = this.containers.indexOf(container);
+    if (index !== -1) {
+      this.containers.splice(index, 1);
+    }
+  }
+
+  // Novos métodos para expandir a API
+  seek(time: number): void {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback && typeof activePlayback.seek === 'function') {
+      activePlayback.seek(time);
+    }
+  }
+
+  stop(): void {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback && typeof activePlayback.stop === 'function') {
+      activePlayback.stop();
+    }
+  }
+
+  getCurrentTime(): number {
+    const activePlayback = this.activeContainer?.getPlayback();
+    return activePlayback?.currentTime || 0;
+  }
+
+  getDuration(): number {
+    const activePlayback = this.activeContainer?.getPlayback();
+    return activePlayback?.duration || 0;
+  }
+
+  setVolume(volume: number): void {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback && typeof activePlayback.setVolume === 'function') {
+      activePlayback.setVolume(volume);
+    }
+  }
+
+  getVolume(): number {
+    const activePlayback = this.activeContainer?.getPlayback();
+    return activePlayback?.volume || 1;
+  }
+
+  mute(): void {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback && typeof activePlayback.mute === 'function') {
+      activePlayback.mute();
+    }
+  }
+
+  unmute(): void {
+    const activePlayback = this.activeContainer?.getPlayback();
+    if (activePlayback && typeof activePlayback.unmute === 'function') {
+      activePlayback.unmute();
+    }
+  }
+
+  isMuted(): boolean {
+    const activePlayback = this.activeContainer?.getPlayback();
+    return activePlayback?.muted || false;
+  }
+
+  enterFullscreen(): void {
+    if (this.activeContainer?.element?.requestFullscreen) {
+      this.activeContainer.element.requestFullscreen();
+    }
+  }
+
+  exitFullscreen(): void {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+
+  isFullscreen(): boolean {
+    return !!(document.fullscreenElement);
+  }
+
+  isPaused(): boolean {
+    const activePlayback = this.activeContainer?.getPlayback();
+    return activePlayback?.paused || true;
+  }
+
+  resize(width: number, height: number): void {
+    if (this.activeContainer?.element) {
+      this.activeContainer.element.style.width = `${width}px`;
+      this.activeContainer.element.style.height = `${height}px`;
+    }
+  }
+
+  destroy(): void {
+    // Destruir todos os plugins
+    this.plugins.forEach(plugin => {
+      if (typeof plugin.destroy === 'function') {
+        plugin.destroy();
+      }
+    });
+    this.plugins = [];
+
+    // Destruir todos os containers
+    this.containers.forEach(container => {
+      // Remover elementos DOM se existirem
+      if (container.element && container.element.parentNode) {
+        container.element.parentNode.removeChild(container.element);
+      }
+    });
+    this.containers = [];
+    this.activeContainer = null;
   }
 }
 
