@@ -3,60 +3,34 @@
 Este projeto foi criado para fins de estudo da arquitetura do player Clappr, com foco em compreender como seus componentes, plugins e playbacks interagem. O objetivo é explorar a estrutura, modularidade e padrões usados no Clappr para fins educacionais.
 
 ## Descrição do Projeto
-## **Índice**
-
-1. [Introdução ao Clappr Player](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-2. [Objetivos do Player](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    2.1 [Objetivos Estratégicos](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-3. [Estrutura de Alto Nível / Componentes Principais](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    3.1 [Descrição Geral](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    3.2 [Descrição Detalhada por Camada](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    3.3 [Fluxo de Inicialização do Clappr](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    3.4 [Containers no Clappr](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-4. [Playback](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    4.1 [Conceito e Abstração](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    4.2 [Seleção de Playback](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    4.3 [Comandos Básicos](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    4.4 [Erros e Fallback](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    4.5 [Recomendações Gerais](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    4.6 [Player x Playback](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-5. [Máquina de Estados](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-6. [Plugins](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    7.1 [Identificação e Carregamento](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    7.2 [Categorias de Plugins](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-7. [Sistema de Eventos](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    8.1 [Modelo Publisher-Subscriber](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    8.2 [Fluxo de Processamento de Eventos](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    8.3 [Principais Eventos do Playback e Container](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-8. [Options no Clappr](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    9.1 [Principais Options](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-    9.2 [Atualização de Options](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-    
-9. [Considerações sobre Concorrência e Threads](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
-10. [Observações Finais](https://www.notion.so/Clappr-Player-Guia-Completo-274757dcb75280f5a289d0914accda9b?pvs=21)
+- Introdução ao Clappr Player
+- Objetivos do Player
+  - Objetivos Estratégicos
+- Estrutura de Alto Nível / Componentes Principais
+  - Descrição Geral
+  - Descrição Detalhada por Camada
+  - Fluxo de Inicialização do Clappr
+  - Containers no Clappr
+- Playback
+  - Conceito e Abstração
+  - Seleção de Playback
+  - Comandos Básicos
+  - Erros e Fallback
+  - Recomendações Gerais
+  - Player x Playback
+- Máquina de Estados
+- Plugins
+  - Identificação e Carregamento
+  - Categorias de Plugins
+- Sistema de Eventos
+  - Modelo Publisher-Subscriber
+  - Fluxo de Processamento de Eventos
+  - Principais Eventos do Playback e Container
+- Options no Clappr
+  - Principais Options
+  - Atualização de Options
+- Considerações sobre Concorrência e Threads
+- Observações Finais
 
 ## **1. Introdução ao Clappr Player**
 
