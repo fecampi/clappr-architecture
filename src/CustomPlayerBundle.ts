@@ -1,7 +1,7 @@
 import { Player } from './Player.ts';
 import { MediaControl } from './plugins/MediaControl/MediaControl.ts';
 import HTML5Playback from './playbacks/HTML5Playback';
-import HLSPlayback from './playbacks/HLSPlayback';
+import HLSPlayback from './playbacks/hlsjs-playback/HLSPlayback.ts';
 
 export const Plugins = {
   MediaControl,

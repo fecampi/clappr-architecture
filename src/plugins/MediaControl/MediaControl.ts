@@ -28,17 +28,17 @@ class MediaControl extends UIPlugin {
     return playPauseButton;
   }
 
-  protected onEnable(): void {
+  public onEnable(): void {
     super.onEnable();
     console.log("MediaControl habilitado");
   }
 
-  protected onDisable(): void {
+  public onDisable(): void {
     super.onDisable();
     console.log("MediaControl desabilitado");
   }
 
-  protected onDestroy(): void {
+  public onDestroy(): void {
     super.onDestroy();
     console.log("MediaControl destruído");
   }
