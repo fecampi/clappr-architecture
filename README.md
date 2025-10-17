@@ -641,7 +641,7 @@ player.options.width = 800
 
 ## Tarefas pendentes
 - [ ] Separar claramente a view dos componentes
-- [ ] Implementar playbacks reais (HTML5, Shaka, HLS)
+- [x] Implementar playbacks reais (HTML5, Shaka, HLS)
 
 ## Como usar
 - [x] Clone este repositório

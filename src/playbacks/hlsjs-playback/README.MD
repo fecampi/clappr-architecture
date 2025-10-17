@@ -221,7 +221,6 @@ const hls = new Hls({
 
 ## Referências
 - [HLS.js README – GitHub](https://github.com/video-dev/hls.js)
-- [HLS.js API Documentation](https://gitee.com/ipeppacar/hls.js/blob/master/docs/API.md)
 - [MDN Web Docs – Using Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
 
 ---

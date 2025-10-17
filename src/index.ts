@@ -5,6 +5,7 @@ if (Playbacks && Plugins) {
 
   player.registerPlayback(Playbacks.HTML5Playback);
   player.registerPlayback(Playbacks.HLSPlayback);
+  player.registerPlayback(Playbacks.ShakaPlayback);
   player.registerPlugin(Plugins.MediaControl);
 
   // Criar seletor de vídeos
@@ -36,6 +37,10 @@ if (Playbacks && Plugins) {
       label: "Sintel WebM (.webm)",
       url: "https://storage.googleapis.com/webm-samples/animation/sintel_trailer-480p.webm",
     },
+    {
+      label: "Shaka Demo DASH (CORS liberado)",
+      url: "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd",
+    },
   ];
 
   videoOptions.forEach((opt, idx) => {
@@ -46,13 +51,28 @@ if (Playbacks && Plugins) {
     videoSelect.appendChild(option);
   });
 
-  // Adicionar ao body ou a uma div/container específico
   document.body.appendChild(videoSelect);
 
-  // Adicionar evento de mudança no seletor
-  videoSelect.addEventListener("change", () => {
+  // Botão OK para carregar vídeo
+  const okButton = document.createElement("button");
+  okButton.textContent = "OK";
+  okButton.id = "ok-button";
+  document.body.appendChild(okButton);
+
+  // Botão Remover para remover vídeo
+  const removeButton = document.createElement("button");
+  removeButton.textContent = "Remover";
+  removeButton.id = "remove-button";
+  document.body.appendChild(removeButton);
+
+  okButton.addEventListener("click", () => {
     const url = videoSelect.value;
     player.load(url);
+  });
+
+  removeButton.addEventListener("click", () => {
+    // Remove todos os elementos <video> do body
+    document.querySelectorAll('video').forEach(video => video.remove());
   });
 
   // Carregar o primeiro vídeo automaticamente

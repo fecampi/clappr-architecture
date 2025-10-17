@@ -14,6 +14,7 @@
     "live-server": "^1.2.2"
   },
   "dependencies": {
-    "hls.js": "^1.6.13"
+    "hls.js": "^1.6.13",
+    "shaka-player": "^4.16.5"
   }
 }
