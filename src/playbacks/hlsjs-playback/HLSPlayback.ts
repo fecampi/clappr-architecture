@@ -1,12 +1,12 @@
 import Playback from '../Playback';
 import {PlaybackOptions} from "../Interfaces"
-import Hls from 'hls.js';
+import { LibraryLoader } from "../../utils/LibraryLoader"
 
 
 class HLSPlayback extends Playback {
   private options: PlaybackOptions;
   private video: HTMLVideoElement | null = null;
-  private hls: Hls | null = null;
+  private hls: any = null;
   private hlsConfig: any = {};
 
   constructor(core: any, options: PlaybackOptions) {
@@ -37,27 +37,35 @@ class HLSPlayback extends Playback {
     this.video.width = 640;
     this.video.height = 360;
     document.body.appendChild(this.video);
-    this.hls = new Hls(this.hlsConfig);
 
-    // Eventos do HLS.js
-    const events = [
-      'MEDIA_ATTACHED',
-      'MANIFEST_PARSED',
-      'LEVEL_LOADED',
-      'FRAG_LOADING',
-      'FRAG_LOADED',
-      'BUFFER_APPENDING',
-      'BUFFER_APPENDED'
-    ];
-    events.forEach(eventName => {
-      // @ts-ignore
-      this.hls.on(Hls.Events[eventName], (event, data) => {
-        console.log(`[HLS.js] Evento: ${eventName}`, data);
+    LibraryLoader.load({
+      script: "/libs/hls.min.js",
+      global: "Hls"
+    }).then((Hls) => {
+      this.hls = new Hls(this.hlsConfig);
+
+      // Eventos do HLS.js
+      const events = [
+        'MEDIA_ATTACHED',
+        'MANIFEST_PARSED',
+        'LEVEL_LOADED',
+        'FRAG_LOADING',
+        'FRAG_LOADED',
+        'BUFFER_APPENDING',
+        'BUFFER_APPENDED'
+      ];
+      events.forEach(eventName => {
+        // @ts-ignore
+        this.hls.on(Hls.Events[eventName], (event, data) => {
+          console.log(`[HLS.js] Evento: ${eventName}`, data);
+        });
       });
-    });
 
-    this.hls.loadSource(src);
-    this.hls.attachMedia(this.video);
+      this.hls.loadSource(src);
+      this.hls.attachMedia(this.video);
+    }).catch((err) => {
+      console.error('[HLS.js] Falha ao carregar:', err);
+    });
   }
 
   play(): void {

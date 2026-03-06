@@ -1,21 +1,7 @@
 import Playback from "../Playback";
 import { PlaybackOptions } from "../Interfaces";
+import { LibraryLoader } from "../../utils/LibraryLoader"
 
-// Função utilitária para carregar o script do Shaka Player dinamicamente
-function loadShakaScript(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if ((window as any).shaka) {
-      resolve();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.6/shaka-player.compiled.js';
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Falha ao carregar o script do Shaka Player'));
-    document.head.appendChild(script);
-  });
-}
 
 class ShakaPlayback extends Playback {
   private options: PlaybackOptions;
@@ -33,7 +19,10 @@ class ShakaPlayback extends Playback {
   }
 
   async load(src: string): Promise<void> {
-    await loadShakaScript();
+    await LibraryLoader.load({
+      script: "/libs/shaka-player.compiled.js",
+      global: "shaka"  
+    });
     // @ts-ignore
     const shaka = (window as any).shaka;
     // Verifica se o Shaka está disponível

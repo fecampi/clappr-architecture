@@ -1,4 +1,5 @@
 import { Player, Plugins, Playbacks } from "./CustomPlayerBundle";
+import videoOptions from "./config/videoOptions";
 
 if (Playbacks && Plugins) {
   const player = new Player({ type: "html5" });
@@ -11,37 +12,6 @@ if (Playbacks && Plugins) {
   // Criar seletor de vídeos
   const videoSelect = document.createElement("select");
   videoSelect.id = "video-selector";
-
-  const videoOptions = [
-    {
-      label: "Big Buck Bunny (Apple HLS .m3u8)",
-      url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8",
-    },
-    {
-      label: "Bunny (FairPlay .m3u8)",
-      url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3_variant/master.m3u8",
-    },
-    {
-      label: "Multi-bitrate (16x9 .m3u8)",
-      url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_16x9_variant/master.m3u8",
-    },
-    {
-      label: "Segmento MPEG-TS (.ts)",
-      url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/v4_1_a.ts",
-    },
-    {
-      label: "Big Buck Bunny MP4 (.mp4)",
-      url: "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
-    },
-    {
-      label: "Sintel WebM (.webm)",
-      url: "https://storage.googleapis.com/webm-samples/animation/sintel_trailer-480p.webm",
-    },
-    {
-      label: "Shaka Demo DASH (CORS liberado)",
-      url: "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd",
-    },
-  ];
 
   videoOptions.forEach((opt, idx) => {
     const option = document.createElement("option");
@@ -67,24 +37,16 @@ if (Playbacks && Plugins) {
 
   okButton.addEventListener("click", () => {
     const url = videoSelect.value;
-    player.load(url);
+    const selectedVideo = videoOptions.find((opt) => opt.url === url);
+    if (selectedVideo) {
+      const { url, options } = selectedVideo;
+      player.load(url, options);
+    }
   });
 
   removeButton.addEventListener("click", () => {
-    // Remove todos os elementos <video> do body
-    document.querySelectorAll('video').forEach(video => video.remove());
+    document.querySelectorAll("video").forEach((video) => video.remove());
   });
-
-  // Carregar o primeiro vídeo automaticamente
-  player.load(videoOptions[0].url);
 } else {
   console.error("Playbacks ou Plugins não estão definidos");
-}
-
-function logHello() {
-  console.log("Olá! Este código roda tanto no Node.js quanto no navegador.");
-}
-
-if (typeof window !== "undefined") {
-  logHello();
 }

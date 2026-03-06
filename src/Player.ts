@@ -27,7 +27,8 @@ class Player extends BaseObject {
     this.core = new Core(this.options);
   }
 
-  load(src: string): void {
+  load(src: string, options?: any): void {
+    this.options = options || {}; 
     this.core.load(src);
     this.trigger('player:load', src);
   }
